@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Email Form Validation</title>
+</head>
+
+<body>
+    <h1>Email Form</h1>
+    <form method="post" action="submit.html" onsubmit="return validateEmail()">
+        <fieldset>
+            Email: <input type="text" name="email" id="email" onblur="checkEmail()">
+            <p id="emailError"></p>
+            <input type="submit" value="Submit">
+            <p id="success"></p>
+        </fieldset>
+    </form>
+
+    <script>
+        let emailValue = "";
+        let emailError = document.getElementById('emailError');
+
+        function checkEmail() {
+            emailValue = document.getElementById('email').value.trim();
+
+            if (emailValue === "") {
+                emailError.innerHTML = "Email cannot be empty!";
+                emailError.style.color = "red";
+                return;
+            }
+
+            // Basic structure check: must contain exactly one '@' and at least one '.' after '@'
+            let atIndex = emailValue.indexOf('@');
+            let lastDotIndex = emailValue.lastIndexOf('.');
+
+            if (
+                atIndex < 1 || // '@' should not be the first character
+                lastDotIndex < atIndex + 2 || // '.' must come after '@' with at least one character
+                lastDotIndex >= emailValue.length - 1 || // '.' cannot be the last character
+                emailValue.indexOf('@', atIndex + 1) !== -1 // more than one '@'
+            ) {
+                emailError.innerHTML = "Please enter a valid email address (e.g. example@domain.com)!";
+                emailError.style.color = "red";
+                return;
+            }
+
+            emailError.innerHTML = "";
+        }
+
+        function validateEmail() {
+            checkEmail();
+            if (emailError.innerHTML === "") {
+                alert("Email is valid!");
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+</body>
+
+</html>

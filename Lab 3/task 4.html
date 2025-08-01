@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Date of Birth Form</title>
+</head>
+
+<body>
+
+    <h1>Date of Birth Validation</h1>
+
+    <form method="post" action="abc.html" onsubmit="return validateDOB()">
+        <fieldset>
+            <legend>Date of Birth</legend>
+            dd: <input type="text" id="dd" name="dd" onblur="checkDay()">
+            <p id="ddError"></p>
+
+            mm: <input type="text" id="mm" name="mm" onblur="checkMonth()">
+            <p id="mmError"></p>
+
+            yyyy: <input type="text" id="yyyy" name="yyyy" onblur="checkYear()">
+            <p id="yyError"></p>
+
+            <input type="submit" value="Submit">
+            <p id="dobSuccess"></p>
+        </fieldset>
+    </form>
+
+    <script>
+        let ddError = document.getElementById('ddError');
+        let mmError = document.getElementById('mmError');
+        let yyError = document.getElementById('yyError');
+        let dobSuccess = document.getElementById('dobSuccess');
+
+        function checkDay() {
+            let dd = document.getElementById('dd').value;
+            if (dd === "") {
+                ddError.innerHTML = "Day cannot be empty!";
+                ddError.style.color = 'red';
+                return false;
+            } else if (isNaN(dd) || dd < 0 || dd > 31) {
+                ddError.innerHTML = "Day must be a number between 0 and 31.";
+                ddError.style.color = 'red';
+                return false;
+            } else {
+                ddError.innerHTML = "";
+                return true;
+            }
+        }
+
+        function checkMonth() {
+            let mm = document.getElementById('mm').value;
+            if (mm === "") {
+                mmError.innerHTML = "Month cannot be empty!";
+                mmError.style.color = 'red';
+                return false;
+            } else if (isNaN(mm) || mm < 1 || mm > 12) {
+                mmError.innerHTML = "Month must be between 1 and 12.";
+                mmError.style.color = 'red';
+                return false;
+            } else {
+                mmError.innerHTML = "";
+                return true;
+            }
+        }
+
+        function checkYear() {
+            let yyyy = document.getElementById('yyyy').value;
+            if (yyyy === "") {
+                yyError.innerHTML = "Year cannot be empty!";
+                yyError.style.color = 'red';
+                return false;
+            } else if (isNaN(yyyy) || yyyy < 1900 || yyyy > 2016) {
+                yyError.innerHTML = "Year must be between 1900 and 2016.";
+                yyError.style.color = 'red';
+                return false;
+            } else {
+                yyError.innerHTML = "";
+                return true;
+            }
+        }
+
+        function validateDOB() {
+            let validDay = checkDay();
+            let validMonth = checkMonth();
+            let validYear = checkYear();
+
+            if (validDay && validMonth && validYear) {
+                dobSuccess.innerHTML = "Date of Birth is valid!";
+                dobSuccess.style.color = "green";
+                return true;
+            } else {
+                dobSuccess.innerHTML = "";
+                return false;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

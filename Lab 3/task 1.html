@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Name Form Validation</title>
+</head>
+
+<body>
+
+    <form method="post" action="submit.html" onsubmit="return validateName()">
+        <fieldset>
+            Name: <input type="text" name="name" value="" id="name" onblur="checkName()">
+            <p id="nameError"></p>
+            <input type="submit" value="Submit">
+            <p id="success"></p>
+        </fieldset>
+    </form>
+
+    <script>
+        let nameValue = "";
+        let nameError = document.getElementById('nameError');
+
+        function isLetter(char) {
+            return (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z');
+        }
+
+        function isAllowedChar(char) {
+            return isLetter(char) || char === '.' || char === '-' || char === ' ';
+        }
+
+        function checkName() {
+            nameValue = document.getElementById('name').value.trim();
+
+            if (nameValue === "") {
+                nameError.innerHTML = "Name cannot be empty!";
+                nameError.style.color = "red";
+                return;
+            }
+
+            // Check if the first character is a letter
+            if (!isLetter(nameValue[0])) {
+                nameError.innerHTML = "Name must start with a letter!";
+                nameError.style.color = "red";
+                return;
+            }
+
+            // Check word count
+            let wordCount = nameValue.split(" ").filter(word => word !== "");
+            if (wordCount.length < 2) {
+                nameError.innerHTML = "Name must contain at least two words!";
+                nameError.style.color = "red";
+                return;
+            }
+
+            // Check each character
+            for (let i = 0; i < nameValue.length; i++) {
+                if (!isAllowedChar(nameValue[i])) {
+                    nameError.innerHTML = "Only letters, dot (.), and dash (-) are allowed!";
+                    nameError.style.color = "red";
+                    return;
+                }
+            }
+
+            nameError.innerHTML = "";
+        }
+
+        function validateName() {
+            checkName();
+            if (nameError.innerHTML === "") {
+                alert("Name is valid!");
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
