@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+    <style>
+        #calculator {
+            width: 200px;
+            margin: 50px auto;
+        }
+        #display {
+            width: 100%;
+            height: 40px;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+        }
+        button {
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div id="calculator">
+        <input type="text" id="display" readonly>
+        <div class="buttons" id="buttons"></div>
+    </div>
+
+    <script>
+        
+        const buttons = [
+            '7', '8', '9', '/',
+            '4', '5', '6', '*',
+            '1', '2', '3', '-',
+            '0', 'C', '=', '+'
+        ];
+
+        const buttonsContainer = document.getElementById('buttons');
+        const display = document.getElementById('display');
+        
+        let currentInput = '0';
+        let previousInput = '';
+        let operation = null;
+        let resetScreen = false;
+
+        
+        for (let i = 0; i < buttons.length; i++) {
+            const btnText = buttons[i];
+            const button = document.createElement('button');
+            button.textContent = btnText;
+            
+            
+            button.addEventListener('click', () => {
+                if (btnText >= '0' && btnText <= '9' || btnText === '.') {
+                    if (currentInput === '0' || resetScreen) {
+                        currentInput = btnText;
+                        resetScreen = false;
+                    } else {
+                        currentInput += btnText;
+                    }
+                    display.value = currentInput;
+                } else if (btnText === 'C') {
+                    currentInput = '0';
+                    previousInput = '';
+                    operation = null;
+                    display.value = currentInput;
+                } else if (btnText === '=') {
+                    calculate();
+                } else {
+                    
+                    if (operation !== null) calculate();
+                    previousInput = currentInput;
+                    operation = btnText;
+                    resetScreen = true;
+                }
+            });
+            
+            buttonsContainer.appendChild(button);
+        }
+
+        function calculate() {
+            let result;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            
+            if (isNaN(prev) || isNaN(current)) return;
+            
+            switch (operation) {
+                case '+': result = prev + current; break;
+                case '-': result = prev - current; break;
+                case '*': result = prev * current; break;
+                case '/': result = prev / current; break;
+                default: return;
+            }
+            
+            currentInput = result.toString();
+            operation = null;
+            display.value = currentInput;
+        }
+    </script>
+</body>
+</html>
