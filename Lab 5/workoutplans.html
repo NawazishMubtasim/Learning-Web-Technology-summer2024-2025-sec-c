@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Workout Plan Form</title>
+<style>
+  body { font-family: Arial,sans-serif; margin:2rem; background:#f9f9f9; }
+  form { max-width:400px; padding:1.5rem; background:#fff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+  label { display:block; margin-bottom:1rem; font-weight:bold; color:#333;}
+  input, select { width:100%; padding:0.5rem; margin-top:0.25rem; font-size:1rem; border:2px solid #ccc; border-radius:4px; box-sizing:border-box; transition:border-color 0.3s;}
+  input:focus, select:focus { border-color:#007bff; outline:none;}
+  .valid { border-color:#28a745; background:#e6f9ec;}
+  .invalid { border-color:#dc3545; background:#f9e6e6;}
+  .error-message { color:#dc3545; font-size:0.875rem; min-height:1.2em; margin-top:0.25rem;}
+  button { padding:0.6rem 1.2rem; font-size:1rem; background:#007bff; border:none; border-radius:4px; color:#fff; cursor:pointer; transition:background-color 0.3s;}
+  button:disabled { background:#6c757d; cursor:not-allowed;}
+  .form-status { margin-top:1rem; font-weight:bold; min-height:1.2em;}
+  small { font-weight:normal; color:#555;}
+</style>
+</head>
+<body>
+
+<h2>Workout Plan Form</h2>
+<form id="form" novalidate>
+  <label>Program Length (4-12 weeks):
+    <select id="programLength" required>
+      <option value="">-- Select --</option>
+      <script>for(let i=4;i<=12;i++)document.write(`<option value="${i}">${i} week${i>1?'s':''}</option>`)</script>
+    </select>
+    <span class="error-message"></span>
+  </label>
+
+  <label>Daily Workout Time:
+    <input type="time" id="dailyWorkoutTime" required />
+    <span class="error-message"></span>
+  </label>
+
+  <label>Workout Days (hold Ctrl/Cmd to select multiple):
+    <select id="workoutDays" multiple size="7" required>
+      <option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+    </select>
+    <span class="error-message"></span>
+  </label>
+
+  <label>Email:
+    <input type="email" id="email" required />
+    <span class="error-message"></span>
+  </label>
+
+  <label>
+    <input type="checkbox" id="notifications" /> Enable Notifications
+  </label>
+
+  <button type="submit" disabled>Submit</button>
+  <div class="form-status" aria-live="polite"></div>
+</form>
+
+<script>
+(() => {
+  const form = document.getElementById('form');
+  const inputs = {
+    programLength: form.programLength,
+    dailyWorkoutTime: form.dailyWorkoutTime,
+    workoutDays: form.workoutDays,
+    email: form.email
+  };
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const status = form.querySelector('.form-status');
+
+  const validators = {
+    programLength: val => !val ? 'Select program length' : (+val < 4 || +val > 12 ? 'Must be 4-12 weeks' : ''),
+    dailyWorkoutTime: val => !val ? 'Select workout time' : '',
+    workoutDays: select => select.selectedOptions.length ? '' : 'Select at least one workout day',
+    email: val => {
+      if(!val) return 'Email required';
+      const at = val.indexOf('@');
+      if(at < 1) return '"@" required with text before it';
+      const dot = val.indexOf('.', at + 2);
+      if(dot === -1 || dot === val.length-1) return 'Must have "." after "@"';
+      if(val.includes(' ')) return 'No spaces allowed';
+      return '';
+    }
+  };
+
+  function validateField(name) {
+    const input = inputs[name];
+    const value = name === 'workoutDays' ? input : input.value.trim();
+    const error = name === 'workoutDays' ? validators[name](input) : validators[name](value);
+    const errorSpan = input.nextElementSibling;
+    errorSpan.textContent = error;
+    input.classList.toggle('invalid', !!error);
+    input.classList.toggle('valid', !error);
+    return !error;
+  }
+
+  function validateAll() {
+    const allValid = Object.keys(inputs).every(validateField);
+    submitBtn.disabled = !allValid;
+    status.textContent = allValid ? 'All fields look good!' : 'Please fix errors to submit.';
+    status.style.color = allValid ? 'green' : 'red';
+    return allValid;
+  }
+
+  Object.keys(inputs).forEach(name => {
+    const el = inputs[name];
+    el.addEventListener(name === 'workoutDays' ? 'change' : 'input', () => {
+      validateField(name);
+      validateAll();
+    });
+  });
+
+  form.addEventListener('submit', e => {
+    if(!validateAll()) {
+      e.preventDefault();
+      status.textContent = 'Fix errors before submitting.';
+      status.style.color = 'red';
+    } else {
+      e.preventDefault(); // Remove to allow real submit
+      status.textContent = 'Form submitted successfully!';
+      status.style.color = 'green';
+    }
+  });
+
+  validateAll();
+})();
+</script>
+
+</body>
+</html>
