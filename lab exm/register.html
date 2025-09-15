@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <script>
+        function validateForm() {
+            let username = document.forms["regForm"]["username"].value.trim();
+            let email = document.forms["regForm"]["email"].value.trim();
+            let password = document.forms["regForm"]["password"].value;
+            let confirm = document.forms["regForm"]["confirm_password"].value;
+
+            if (username === "" || email === "" || password === "" || confirm === "") {
+                alert("All fields must be filled out");
+                return false;
+            }
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long");
+                return false;
+            }
+            if (password !== confirm) {
+                alert("Passwords do not match");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h2>Registration</h2>
+    <form name="regForm" action="register.php" method="post" onsubmit="return validateForm()">
+        Username: <input type="text" name="username" required><br><br>
+        Email: <input type="email" name="email" required><br><br>
+        Password: <input type="password" name="password" required><br><br>
+        Confirm Password: <input type="password" name="confirm_password" required><br><br>
+        User Type:
+        <select name="usertype" required>
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+        </select><br><br>
+        <input type="submit" value="Register">
+        <a href="login.html">Login</a>
+    </form>
+</body>
+</html>
